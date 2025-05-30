@@ -3,10 +3,10 @@ This repository contains files for the manuscript [Computing phylogenetic invari
 
 ## File descriptions
 
-The repository contains code in the following two languages:
+The repository contains two folders with code in the following to software systems:
 
 * Macaulay2:
-  * Tripod.m2: This file contains...
+  * Tripod.m2: This file contains the code for computations in Theorem ...
   * 
 * Sage:
   * ...
