@@ -1,5 +1,5 @@
 # Computing phylogenetic invariants for time-reversible models: from TN93 to its submodels
-This repository contains files for the manuscript [Computing phylogenetic invariants for time-reversible models: from TN93 to its submodels](https://arxiv.org/abs/2505.20526) (2505.20526) by Marta Casanellas, Jennifer Garbett, Roser Homs, Annachiara Korchmaros, Niharika Chakrabarty Paul.
+This repository contains files for the manuscript [Computing phylogenetic invariants for time-reversible models: from TN93 to its submodels](https://arxiv.org/abs/2505.20526) (arXiv:2505.20526) by Marta Casanellas, Jennifer Garbett, Roser Homs, Annachiara Korchmaros, Niharika Chakrabarty Paul.
 
 ## File descriptions
 
