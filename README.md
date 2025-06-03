@@ -9,7 +9,7 @@ The repository contains two folders with code in the following to software syste
   * Tripod.m2: This file contains the code for computations in Theorem ...
   * 
 * Sage:
-  * ...
-  *
+  * F84_nep.sage: This file contains the code for computations that are used in the proof of Theorem 7.3.
+  * F81_nep.sage: This file contains the code for computations that are used in the proof of Theorem 7.6.
   
 Under construction, completion expected by June 15th.
