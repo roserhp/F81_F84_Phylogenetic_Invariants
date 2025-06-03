@@ -3,7 +3,7 @@ This repository contains files for the manuscript [Computing phylogenetic invari
 
 ## File descriptions
 
-The repository contains two folders with code in the following to software systems:
+The repository contains two folders with code in the following two software systems:
 
 * Macaulay2:
   * Tripod_propositions.m2: This file contains computational proofs for Propositions 3.2, 3.3, 3.4, 7.1 and 7.2.
