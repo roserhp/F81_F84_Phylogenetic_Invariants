@@ -10,8 +10,8 @@ The repository contains two folders with code in the following to software syste
   * 
 * Sage:
   * F84_nep.sage: This file contains the code for computations that are used in the proof of Theorem 7.3.
-  * F84QuartetIdeals: This file contains code to verify Corollary 7.5 computationally by computing relevant ideals.  
+  * F84QuartetIdeals.ipynb: This file contains code to verify Corollary 7.5 computationally by computing relevant ideals.  
   * F81_nep.sage: This file contains the code for computations that are used in the proof of Theorem 7.6.
-  * F81QuartetIdeals: This file contains code to verify Theorem 7.6 and Corollary 7.8 computationally by computing relevant ideals. 
+  * F81QuartetIdeals.ipynb: This file contains code to verify Theorem 7.6 and Corollary 7.8 computationally by computing relevant ideals. 
   
 Under construction, completion expected by June 15th.
