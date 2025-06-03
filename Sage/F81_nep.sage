@@ -14,8 +14,8 @@ f7 = p1212*p2333 - p2212*p1222;
 #compute the Jacobian for a generic point
 J(p1111, p1212, p1221, p1222, p2121, p2211, p2221, p2112, p2122, p3333, p2232, p2333) = jacobian((f1,f2,f3,f4,f5,f6,f7), (p1111, p1212, p1221, p1222, p2121, p2211, p2221, p2112, p2122, p3333, p2232, p2333))\
 
-#define the jacobian at the no-evolution point\
-nep_jac = J(1,1,1,1,1,1,1,1,1,1,1,1)\
+#define the jacobian at the no-evolution point
+nep_jac = J(1,1,1,1,1,1,1,1,1,1,1,1)
 
-#compute the rank of the Jacobian at the no evolution point\
-nep_jac.rank()}
+#compute the rank of the Jacobian at the no evolution point
+nep_jac.rank()
