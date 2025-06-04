@@ -9,7 +9,7 @@ For the sake of readability, some required computations can be found in file Tri
   * No-evolution point $\rho=\varphi(Id,Id,Id)$ in ptilde coordinates
   * General point $p=\varphi(D_1,D_2,D_3)$ in ptilde coordinates for TN93
   * Vanishing ideal in ptilde coordinates for TN93
-  * Complete intersection for TN93
+  * Complete intersection in $\tilde{p}_{i_1i_2i_3}$ for TN93
 
 The following .txt files have been generated with Tripod.m2:
  * NonZeroEntries.txt
