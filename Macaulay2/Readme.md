@@ -7,9 +7,9 @@ For the sake of readability, some required computations can be found in file Tri
 * Tripod.m2: this file contains the following computations regarding tripods:
   * No-evolution point $\rho=\varphi(Id,Id,Id)$ in probability coordinates
   * No-evolution point $\rho=\varphi(Id,Id,Id)$ in ptilde coordinates
-  * General point $p=\varphi(D_1,D_2,D_3)$ in ptilde coordinates for TN93
-  * Vanishing ideal in ptilde coordinates for TN93
-  * Complete intersection in $\tilde{p}_{i_1i_2i_3}$ for TN93
+  * General point $p=\varphi(D_1,D_2,D_3)$ in coordinates $\tilde{p}_{i_1i_2i_3}$ for TN93
+  * Vanishing ideal in coordinates $\tilde{p}_{i_1i_2i_3}$ for TN93
+  * Complete intersection in coordinates $\tilde{p}_{i_1i_2i_3}$ for TN93
 
 The following .txt files have been generated with Tripod.m2:
  * NonZeroEntries.txt
