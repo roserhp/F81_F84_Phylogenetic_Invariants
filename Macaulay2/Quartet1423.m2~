@@ -1,0 +1,87 @@
+-----------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------
+--
+-- Quartet1324.m2: this file contains the following computations regarding quartets with tree topology 13|24:
+--
+-- 1. No-evolution point rho=psi(Id,Id,Id,Id,Id) and point q=psi(Id,Id,Id,Id,M) for TN93 in probability coordinates
+-- 2. Point q=varphi(Id,Id,Id,Id,D) for TN93 in ptilde coordinates
+-- 3. General point p=varphi(D_1,D_2,D_3,D_4,D) in ptilde coordinates for TN93
+--
+-- For computational proofs see Quartet_propositions.m2
+----------------------------------------------------------------------------------------------------------- 
+----------------------------------------------------------------------------------------------------------- 
+restart
+
+-- Ring declaration: 
+-- p_1,p_2,p_3,p_4 are parameters representing the root distribution p=(p_1,p_2,p_3,p_4)
+-- variable l_(i,j) corresponds to eigenvalue j of transition matrix i
+
+K=frac(QQ[p_1,p_2,p_3,p_4]);
+R=K[l_(1,1)..l_(5,4)];
+
+-----------------------------------------------------------------------------------------------------------------
+-- 1. No-evolution point rho=psi(Id,Id,Id,Id,Id) and point q=psi(Id,Id,Id,Id,M) for TN93 in probability coordinates
+-----------------------------------------------------------------------------------------------------------------
+
+-- Transition matrices at pendant edges
+M1=id_(R^4)
+M2=M1
+M3=M1
+M4=M1
+
+-- Matrix of change of basis
+A=sub(matrix{{p_1,p_1*p_3+p_1*p_4,0,(p_1*p_2)/(p_1+p_2)},{p_2,p_2*p_3+p_2*p_4,0,(-p_1*p_2)/(p_1+p_2)},{p_3,-p_1*p_3-p_2*p_3,(p_3*p_4)/(p_3+p_4),0},{p_4,-p_1*p_4-p_2*p_4,(-p_3*p_4)/(p_3+p_4),0}},R);
+Ainv=inverse A
+
+-- Transition matrix at the interior edge
+M5=transpose(Ainv)*diagonalMatrix{l_(5,1),l_(5,2),l_(5,3),l_(5,4)}*transpose(A)
+
+-- Point q=psi(Id,Id,Id,Id,M) in probability coordinates
+st={1,2,3,4};
+S=sort elements (set st)^**4/splice/splice;
+
+q=mutableMatrix(R,256,1)
+for i to 255 do (
+	q_(i,0)=sum flatten toList apply(st,k->apply(st,kk->p_k*M1_(position(st,l->l==k),position(st,l->l==(S_i)_0))*M3_(position(st,l->l==k),position(st,l->l==(S_i)_2))*M2_(position(st,l->l==kk),position(st,l->l==(S_i)_1))*M4_(position(st,l->l==kk),position(st,l->l==(S_i)_3))*M5_(position(st,l->l==k),position(st,l->l==kk))))
+) 
+q=matrix q;
+
+-- No-evolution point rho=psi(Id,Id,Id,Id,Id) in probability coordinates
+rho=transpose matrix{toList apply(flatten entries q,i->sub(i,toList apply(1..4,i->l_(5,i)=>1)))};
+
+---------------------------------------------------------------------------
+-- 2. Point q=varphi(Id,Id,Id,Id,D) for TN93 in ptilde coordinates
+---------------------------------------------------------------------------
+
+-- No-evolution point in pi-orthogonal coordinates 
+rhobar=(Ainv**Ainv**Ainv**Ainv)*rho;
+
+-- Point q for TN93 in pi-orthogonal coordinates 
+qbar=(Ainv**Ainv**Ainv**Ainv)*q;
+
+-- Point q for TN93 in ptilde coordinates 
+qtilde=transpose matrix{toList apply(0..255,i->if(rhobar_(i,0)!=0) then (1/sub(rhobar_(i,0),K))*qbar_(i,0) else qbar_(i,0))};
+
+-------------------------------------------------------------------------------
+-- 3. General point p=varphi(D_1,D_2,D_3,D_4,D) in ptilde coordinates for TN93
+-------------------------------------------------------------------------------
+
+--Transition matrices of a general point 
+D1=diagonalMatrix toList(l_(1,1)..l_(1,4))
+D2=diagonalMatrix toList(l_(2,1)..l_(2,4))
+D3=diagonalMatrix toList(l_(3,1)..l_(3,4))
+D4=diagonalMatrix toList(l_(4,1)..l_(4,4))
+
+-- General point in pi-orthogonal coordinates;
+ptilde=(D1**D2**D3**D4)*qtilde;
+
+-- View ptilde coordinates for a general point   
+netList apply(S,i->{i,ptilde_(position(S,j->j==i),0)})
+
+--Indices corresponding to non-zero ptilde coordinates for TN93 for quartet 12|34
+nonZeroEntries=S_(positions(flatten entries ptilde,i->i!=0))
+"1324NonZeroEntries.txt" << toString nonZeroEntries << endl << close
+
+--Non-zero ptilde coordinates for TN93 for quartet 12|34
+PTILDE=flatten entries ptilde^(positions(flatten entries ptilde,i->i!=0));
+"1324NonZeroPtilde.txt" << toString PTILDE << endl << close

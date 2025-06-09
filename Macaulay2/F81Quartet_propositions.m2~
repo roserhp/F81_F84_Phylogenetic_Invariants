@@ -1,0 +1,614 @@
+-----------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------
+--
+-- F81Quartet_propositions.m2: this file contains computations behind the following results on quartets:
+--
+-- 0. Setup
+-- 1. Parametrization and vanishing ideal for F81 with each tree topology
+--
+-- Sanity check:
+-- 2. Proposition 4.7: the listed equations are indeed linear model equations
+--
+-- Computational proof:
+-- 3. Proposition 5.4: the listed linear binomial equations hold for a specific tree topology
+-- 4. Proposition 5.5: the listed linear non-binomial equations hold for a specific tree topology
+-- 5. Proposition 6.4: space of mixtures of a specific tree topology
+-- 6. Proposition 6.5: the listed equations are model equations
+-- 7. Theorem 6.7: space of mixtures
+-- 8. Theorem 7.6: phylogenetic variety and complete intersection
+-- 9. Corollary 7.8: rank constraints in flattening matrices
+-- 10. Corollary 7.10: variety of TN93 intersected with symmetry equations
+-------------------------------------------------------------------
+
+-------------------------------------------------------------------
+-- 0. Setup
+-------------------------------------------------------------------
+restart
+
+-- Ring declaration: eigenvalues
+-- p_1,p_2,p_3,p_4 are parameters representing the root distribution p=(p_1,p_2,p_3,p_4)
+-- variable l_(i,j) corresponds to eigenvalue j of transition matrix i
+K=frac(QQ[p_1,p_2,p_3,p_4]);
+R=K[l_(1,1)..l_(5,4)];
+
+-- ptilde coordinates for point q=varphi(Id,Id,Id,Id,D_5) for tree 12|34 for TN93
+qtilde12=value get "qtilde.txt";
+
+-- permuting coordinates of q to obtain coordinates for the other tree topologies
+st={1,2,3,4};
+S=sort elements (set st)^**4/splice/splice;
+
+needsPackage "Permutations"
+sigma13=permutation{1,3,2,4}
+sigma14=permutation{1,4,3,2}
+S13=toList apply(S,i->toSequence(sigma13*i));
+S14=toList apply(S,i->toSequence(sigma14*i));
+-- ptilde coordinates for point q=varphi(Id,Id,Id,Id,D_5) for trees 13|24 and 14|23 for TN93
+qtilde13=transpose matrix{apply(S13,i->qtilde12_(position(S,j->j==i),0))};
+qtilde14=transpose matrix{apply(S14,i->qtilde12_(position(S,j->j==i),0))};
+
+--ptilde coordinates for general point p=varphi(D_1,D_2,D_3,D_4,D_5)
+D1=diagonalMatrix toList(l_(1,1)..l_(1,4))
+D2=diagonalMatrix toList(l_(2,1)..l_(2,4))
+D3=diagonalMatrix toList(l_(3,1)..l_(3,4))
+D4=diagonalMatrix toList(l_(4,1)..l_(4,4))
+D=D1**D2**D3**D4;
+
+ptilde12=D*qtilde12;
+ptilde13=D*qtilde13;
+ptilde14=D*qtilde14;
+
+--non-zero coordinates for general point (at least for some tree topology)
+nonZeroEntries=sort unique join(S_(positions(flatten entries ptilde12,i->i!=0)),
+S_(positions(flatten entries ptilde13,i->i!=0)),
+S_(positions(flatten entries ptilde14,i->i!=0)))
+
+-- Ring declaration: ptildes
+-- variables p_ijk, non-zero ptilde coordinates
+varp=toList apply(nonZeroEntries,i->(symbol p)_i);
+Rp=K[varp]; 
+
+-----------------------------------------------------------------------
+-- 1. Parametrization and vanishing ideal for F81 with each tree topology 
+-----------------------------------------------------------------------
+
+-- In model F81, eigenvalues for 2, 3 and 4 are equal
+F81=flatten toList apply(1..5,i->{l_(i,3)=>l_(i,4),l_(i,2)=>l_(i,4)})
+
+-- Non-zero ptilde coordinates for F81 for tree topology 12|34
+ptilde12F81=flatten entries sub(ptilde12^(apply(nonZeroEntries,i->position(S,j->j==i))),F81)
+ptilde13F81=flatten entries sub(ptilde13^(apply(nonZeroEntries,i->position(S,j->j==i))),F81)
+ptilde14F81=flatten entries sub(ptilde14^(apply(nonZeroEntries,i->position(S,j->j==i))),F81)
+
+--Parametrization map
+f12=map(R,Rp,ptilde12F81);
+f13=map(R,Rp,ptilde13F81);
+f14=map(R,Rp,ptilde14F81);
+
+--Vanishing ideal
+I12=time trim kernel f12;
+-- used 2.53137 seconds
+I13=time trim kernel f13;
+ -- used 2.83943 seconds
+I14=time trim kernel f14;
+-- used 2.73344 seconds
+
+betti I12 -- 71 linear, 10 quadrics, 23 cubics
+betti I13 -- 71 linear, 10 quadrics, 23 cubics
+betti I14 --- 71 linear, 10 quadrics, 23 cubics
+
+
+
+------------------------------------------------------------------
+-------------------------------------------------------------------
+-- 2. Proposition 4.7 symmetry equations for F81
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+-- Symmetry equations for F81
+F=trim ideal{p_(1,1,4,4)-p_(1,1,2,2), -- (a)
+        p_(1,4,1,4)-p_(1,2,1,2),
+	p_(1,4,4,1)-p_(1,2,2,1),
+	p_(4,1,1,4)-p_(2,1,1,2),
+	p_(4,1,4,1)-p_(2,1,2,1),
+	p_(4,4,1,1)-p_(2,2,1,1),
+	p_(1,2,4,4)-p_(1,4,4,4), 
+        p_(1,4,2,4)-p_(1,4,4,4),
+	p_(1,4,4,2)-p_(1,4,4,4),
+	p_(4,1,2,4)-p_(4,1,4,4),
+	p_(4,1,4,2)-p_(4,1,4,4),
+	p_(4,4,1,2)-p_(4,4,1,4),
+	p_(2,1,4,4)-p_(4,1,4,4),
+        p_(2,4,1,4)-p_(4,4,1,4),
+	p_(2,4,4,1)-p_(4,4,4,1),
+	p_(4,2,1,4)-p_(4,4,1,4),
+	p_(4,2,4,1)-p_(4,4,4,1),
+	p_(4,4,2,1)-p_(4,4,4,1),
+        p_(1,2,2,2)-p_(1,4,4,4),
+        p_(2,1,2,2)-p_(4,1,4,4),
+	p_(2,2,1,2)-p_(4,4,1,4),
+	p_(2,2,2,1)-p_(4,4,4,1),
+	p_(1,1,3,3)-p_(1,1,2,2), 
+        p_(1,3,1,3)-p_(1,2,1,2),
+	p_(1,3,3,1)-p_(1,2,2,1),
+	p_(3,1,1,3)-p_(2,1,1,2),
+	p_(3,1,3,1)-p_(2,1,2,1),
+	p_(3,3,1,1)-p_(2,2,1,1),
+	p_(1,2,3,3)-p_(1,4,4,4), 
+        p_(1,3,2,3)-p_(1,4,4,4),
+	p_(1,3,3,2)-p_(1,4,4,4),
+	p_(3,1,2,3)-p_(4,1,4,4),
+	p_(3,1,3,2)-p_(4,1,4,4),
+	p_(3,3,1,2)-p_(4,4,1,4),
+	p_(2,1,3,3)-p_(4,1,4,4),
+        p_(2,3,1,3)-p_(4,4,1,4),
+	p_(2,3,3,1)-p_(4,4,4,1),
+	p_(3,2,1,3)-p_(4,4,1,4),
+	p_(3,2,3,1)-p_(4,4,4,1),
+	p_(3,3,2,1)-p_(4,4,4,1),
+        p_(1,3,3,3)-p_(1,4,4,4),
+        p_(3,1,3,3)-p_(4,1,4,4),
+	p_(3,3,1,3)-p_(4,4,1,4),
+	p_(3,3,3,1)-p_(4,4,4,1),
+	p_(4,2,4,4)-p_(2,4,4,4), -- (b)
+	p_(4,4,2,4)-p_(2,4,4,4),
+	p_(4,4,4,2)-p_(2,4,4,4),
+	p_(2,3,3,3)-p_(2,4,4,4), 
+	p_(3,2,3,3)-p_(2,4,4,4), 
+	p_(3,3,2,3)-p_(2,4,4,4),
+	p_(3,3,3,2)-p_(2,4,4,4),
+	p_(2,2,3,3)-p_(3,3,2,2), -- (c)
+	p_(2,3,2,3)-p_(3,2,3,2),
+	p_(2,3,3,2)-p_(3,2,2,3),
+	p_(2,2,4,4)-p_(4,4,2,2),
+	p_(2,4,2,4)-p_(4,2,4,2),
+	p_(2,4,4,2)-p_(4,2,2,4),
+	p_(3,3,4,4)-p_(4,4,3,3),
+	p_(3,4,3,4)-p_(4,3,4,3),
+	p_(3,4,4,3)-p_(4,3,3,4)}
+
+--Sanity check: 60 symmetry equations
+numcols mingens F==60
+
+--Sanity check: 
+-- the equations in F are symmetry equations of the model
+-- note that we are not proving that they are the only symmetry equations
+
+apply(flatten entries gens F,i->f12(i))
+apply(flatten entries gens F,i->f13(i))
+apply(flatten entries gens F,i->f14(i))
+
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+-- Proposition 5.4: additional binomial equations for a specific tree topology
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
+G=ideal{p_(3,4,3,4),
+        p_(3,4,4,3),
+	p_(2,4,2,4)-p_(2,4,4,4),
+	p_(2,4,4,2)-p_(2,4,4,4),
+	p_(2,3,2,3)-p_(2,4,4,4),
+	p_(2,3,3,2)-p_(2,4,4,4)}
+
+--Sanity check
+isSubset(F+G,I12) --true
+numgens trim(F+G) --66
+
+-- there are 5 more linear equations (see Prop 5.5)
+
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+-- Proposition 5.5: non-binomial equations for a specific tree topology
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
+--Check the listed polynomials belong to the ideal.
+--Note that in the equations of the paper it has been sometimes used to simplify expressions
+--that p_1+p_2+p_3+p_4=1
+
+a=(p_3+p_4)^3*p_(2,2,4,4)-((p_1+p_2)^3+(p_3+p_4)^3)*p_(2,2,2,2)+(p_1+p_2)^3*p_(2,2,3,3)
+f12(a) --0
+
+b=(p_1+p_2)^2*(p_3^3+p_4^3)*p_(3,3,3,3)-(p_1+p_2)^2*(p_3+p_4)*(p_3-p_4)^2*p_(2,4,4,4)-p_3*p_4*(p_1+p_2)^2*(p_3+p_4)*p_(2,2,3,3)+p_1*p_2*p_3^2*p_4^2*(p_3+p_4)^2*p_(3,3,4,4)
+f12(b) --0
+
+c=(p_3+p_4)^2*(p_1^3+p_2^3)*p_(4,4,4,4)-(p_1+p_2)*(p_3+p_4)^2*(p_1-p_2)^2*p_(2,4,4,4)-p_1*p_2*(p_1+p_2)*(p_3+p_4)^2*p_(2,2,4,4)+p_1^2*p_2^2*p_3*p_4*(p_1+p_2)^2*p_(3,3,4,4)
+f12(c) --0
+
+d=(p_3+p_4)^2*p_(2,2,4,4)-(p_1+p_2)^2*p_(2,2,3,3)-((p_3+p_4)^2-(p_1+p_2)^2)*p_(2,4,4,4)
+f12(d) -- Not 0
+sub(f12(d),p_4=>1-p_1-p_2-p_3) --0
+
+e=p_1^2*p_2^2*p_3*p_4*(p_1+p_2)*p_(3,3,4,4)-(p_3+p_4)*(p_1^3+p_2^3)*(p_(4,4,4,4)-p_(2,4,4,4))
+f12(e) -- 0
+
+f=(p_3^3+p_4^3)*p_(1,1,1,1)*p_(3,3,3,3)-(p_3^3+p_4^3-p_3*p_4*(p_3+p_4)^2)*p_(1,1,1,1)*p_(2,4,4,4)-p_3*p_4*(p_3+p_4)^2*p_(1,1,4,4)*p_(4,4,1,1)
+f12(f) -- 0
+sub(f12(f),p_4=>1-p_1-p_2-p_3) --0
+
+
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+-- Proposition 6.4: space of mixtures for a specific tree topology
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
+--F defined in Proposition 4.7
+--G defined in Proposition 5.4
+--a..e defined in Proposition 5.5
+
+E12=trim(F+G+ideal{a,b,c,d,e});
+I12linear=ideal select(flatten entries gens I12,i->degree i=={1});
+I12linear==E12 --true
+
+
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+-- Proposition 6.5: non-binomial linear model equations
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
+a2=(p_3+p_4)^2*p_(2,2,4,4)-(p_1+p_2)^2*p_(2,2,3,3)-((p_3+p_4)^2-(p_1+p_2)^2)*p_(2,4,4,4)
+f12(a2)--0
+f13(a2)--0
+f14(a2)--0
+b2=(p_3+p_4)^2*p_(2,4,2,4)-(p_1+p_2)^2*p_(2,3,2,3)-((p_3+p_4)^2-(p_1+p_2)^2)*p_(2,4,4,4)
+f12(b2)--0
+f13(b2)--0
+f14(b2)--0
+c2=(p_3+p_4)^2*p_(2,4,4,2)-(p_1+p_2)^2*p_(2,3,3,2)-((p_3+p_4)^2-(p_1+p_2)^2)*p_(2,4,4,4)
+f12(c2)--0
+f13(c2)--0
+f14(c2)--0
+d2=p_1*p_2*p_3*p_4*p_(3,3,4,4)-(p_1+p_2)^2*(p_(2,2,3,3)-p_(2,4,4,4))
+f12(d2)--not 0
+sub(f12(d2),p_4=>1-p_1-p_2-p_3) --0
+f13(d2)--0
+f14(d2)--0
+e2=p_1*p_2*p_3*p_4*p_(3,4,3,4)-(p_1+p_2)^2*(p_(2,3,2,3)-p_(2,4,4,4))
+f12(e2)--0
+f13(e2)--not 0
+sub(f12(e2),p_4=>1-p_1-p_2-p_3) --0
+f14(e2)--0
+f2=p_1*p_2*p_3*p_4*p_(3,4,4,3)-(p_1+p_2)^2*(p_(2,3,3,2)-p_(2,4,4,4))
+f12(f2) --0
+f14(f2) --not 0
+sub(f14(f2),p_4=>1-p_1-p_2-p_3) --0
+g2=p_1*p_2*p_3*p_4*(p_(3,3,4,4)+p_(3,4,3,4)+p_(3,4,4,3))-((p_1+p_2)^3+(p_3+p_4)^3)*(p_(2,2,2,2)-p_(2,4,4,4))
+f12(g2) --not 0
+sub(f12(g2),p_4=>1-p_1-p_2-p_3) --0
+h2=(p_1+p_2)*(p_3^3+p_4^3)*(p_(3,3,3,3)-p_(2,4,4,4))-p_3*p_4*(p_3+p_4)*((p_1+p_2)^3+(p_3+p_4)^3)*(p_(2,2,2,2)-p_(2,4,4,4))
+f12(h2) --not 0
+sub(f12(h2),p_4=>1-p_1-p_2-p_3) --0
+i2=(p_3+p_4)*(p_1^3+p_2^3)*(p_(4,4,4,4)-p_(2,4,4,4))-p_1*p_2*(p_1+p_2)*((p_1+p_2)^3+(p_3+p_4)^3)*(p_(2,2,2,2)-p_(2,4,4,4))
+f12(i2) --not 0
+sub(f12(i2),p_4=>1-p_1-p_2-p_3) --0
+
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+-- Theorem 6.7: space of mixtures
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
+-- Union of phylogenetic varieties (intersection of ideals)
+
+-- Note that it takes a few minutes to run
+-- Uncomment if you want to rerun
+--I=time intersect(I12,I13,I14);
+-- used 470.256 seconds
+--betti I --69,3,91
+--do not rerun unless in need of overwriting
+--"I.txt" << toString I << endl << close
+I=value get "I.txt";
+
+-- Comparing described equations to linear part of I
+E=trim(F+ideal{a2,b2,c2,d2,e2,f2,g2,h2,i2});
+Ilinear=ideal select(flatten entries gens I,i->degree i=={1});
+Ilinear==E --false
+sub(Ilinear,p_4=>1-p_1-p_2-p_3)==sub(E,p_4=>1-p_1-p_2-p_3) --true
+
+
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+-- Theorem 7.6: complete intersection
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
+-- Step 1: reproduce the steps we did to obtain the equations
+
+          -- 1.1 cubic equations in the statement have been obtained by adding 1's in tripod cubic equation
+
+xa=p_(1,1,4,4)*p_(1,4,1,4)*p_(1,4,4,1)-p_(1,1,1,1)*p_(1,4,4,4)^2
+xb=p_(1,4,4,1)*p_(4,1,4,1)*p_(4,4,1,1)-p_(1,1,1,1)*p_(4,4,4,1)^2
+
+          -- 1.2 quadric equations are obtained from the rank blocks of the flattening matrix	   
+
+-- flattening matrix for tree topology 12|34 for TN93
+flat=value get "Flat1234_ptilde.txt"; 
+-- adding symmetry constraints to the flattening matrix
+flatF81=sub(flat,apply(flatten entries gens F,i->(terms i)_0=>-(terms i)_1));
+
+--build rank blocks (same as for TN93, see Quartet.m2 or "A novel algebraic approach to time-reversible evolutionary models")
+s={(1,1),(1,4),(4,1),(2,4),(4,2),(4,4),(2,2),(1,2),(2,1),(3,3),(1,3),(3,1),(2,3),(3,2),(3,4),(4,3)}
+--Blocks of rk 1
+B11=flatF81_{position(s,i->i==(1,4)),position(s,i->i==(4,1)),position(s,i->i==(2,4)),position(s,i->i==(4,2))}
+B12=flatF81_{position(s,i->i==(1,3)),position(s,i->i==(3,1)),position(s,i->i==(3,2)),position(s,i->i==(2,3))}
+B13=flatF81_{position(s,i->i==(1,2)),position(s,i->i==(2,1))}
+--Block of rk 2
+B2=flatF81_{position(s,i->i==(1,1)),position(s,i->i==(1,2)),position(s,i->i==(2,2))}
+--Blocks of rk 3
+B31=flatF81_{position(s,i->i==(1,1)),position(s,i->i==(1,2)),position(s,i->i==(1,4)),position(s,i->i==(4,4))}
+B32=flatF81_{position(s,i->i==(1,1)),position(s,i->i==(1,2)),position(s,i->i==(1,3)),position(s,i->i==(3,3))}
+
+--rk 0 conditions
+CI0=ideal{p_(3,4,3,4),p_(4,3,4,3),p_(3,4,4,3),p_(4,3,3,4)}
+--rk 1 conditions
+CI1F81=trim ((ideal flatten for i to (numcols B11)-1 list (for j to (numrows B11)-1 list det B11_{0,i}^{1,j}))+
+(ideal flatten for i to (numcols B12)-1 list (for j to (numrows B12)-1 list det B12_{0,i}^{10,j}))+
+(ideal flatten for i to (numcols B13)-1 list (for j to (numrows B13)-1 list det B13_{0,i}^{7,j})));
+--rk 2 conditions
+CI2F81=trim (ideal flatten for j to (numrows B2)-1 list det B2_{0,1,2}^{0,7,j});
+--rk 3 conditions
+CI3F81=trim (ideal flatten for j to (numrows B31)-1 list det B31^{0,7,1,j}+ideal flatten for j to (numrows B32)-1 list det B32^{0,7,10,j});
+--All ranks
+CIF81=trim(CI0+CI1F81+CI2F81+CI3F81);
+betti CIF81 --4 linear, 8 quadrics, 3 cubics, 3 quartics
+netList CIF81_*
+
+--Remark 5.1: p_(1,1,1,1) and p_(1,4,1,4) can be factored out in each equation 
+ciF81=trim sum apply(flatten entries gens CIF81,i->saturate(ideal{i},ideal{p_(1,1,1,1)*p_(1,4,1,4)}));
+betti ciF81 --13 linear, 5 quadrics
+netList ciF81_*
+ciF81linear=ideal select(flatten entries gens ciF81,i->degree i=={1});
+isSubset(ciF81linear,E12) --true
+
+xc=ciF81_15
+xd=ciF81_17
+xe=ciF81_16
+xf=ciF81_14
+xg=ciF81_13
+
+-- Step 2: check that the equations cut a local complete intersection
+
+X=ideal{xa,xb,xc,xd,xe,xf,xg};
+netList X_*
+betti X
+
+--Rank of the Jacobian at the no-evolution point
+Jac=jacobian X;
+noEvol=matrix{toList apply(gens Rp,i->sub(f12(i),apply(gens R,i->i=>1)))}
+JacNoEvol=sub(Jac,noEvol)
+rank JacNoEvol --7
+
+-- Step 3: check that the saturation of the complete intersection is the whole vanishing ideal
+I12==saturate(X+E12,ideal{p_(1,1,1,1)*p_(1,4,1,4)*p_(4,1,4,1)}) --true
+
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+-- Corollary 7.8
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
+JA=ideal{xc,xd,xe,xf,xg}+E12;
+IA=CIF81+F;
+saturate(JA,ideal{p_(1,1,1,1)*p_(1,4,1,4)})==saturate(IA,ideal{p_(1,1,1,1)*p_(1,4,1,4)}) --true
+
+JAsaturated=saturate(JA,ideal{p_(1,1,1,1)*p_(1,4,1,4)});
+isSubset(JAsaturated,I12) --true
+
+
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+-- Corollary 7.10
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+
+
+
+
+
+
+
+--------------------------------------------------------------------------
+---------------------------------------------------------------------------
+--------------------------------------------------------------------------
+--A partir d'aquí, s'ha de mirar bé. Sembla que no és correcte que la CI és la interseccio de CI i F
+
+-------------------------------------------------------------------
+-- Corollary 7.8
+-------------------------------------------------------------------
+
+-- Complete intersection ideal for TN93 in ptilde coordinates
+CI=value get "Quartet1234CI_ptilde.txt";
+betti CI --28 quadrics, 4 cubics, 14 quartics
+
+CI81=trim(CI+F);
+betti CI81 --8,3,3
+
+netList CI81_*
+
+J=ideal{p_(1,4,1,4)*p_(4,1,4,1)-p_(4,1,1,4)*p_(1,4,4,1),
+    p_(1,4,1,4)*p_(4,1,4,4)-p_(4,1,1,4)*p_(1,4,4,4),
+    p_(1,4,1,4)*p_(4,4,4,1)-p_(4,4,1,4)*p_(1,4,4,1),
+    p_(1,4,1,4)*p_(2,4,4,4)-p_(4,4,1,4)*p_(1,4,4,4),f}
+
+
+isSubset(sub(J,p_4=>1-p_1-p_2-p_3),sub(CI81,p_4=>1-p_1-p_2-p_3)) --false
+
+f % gb CI81 --no 0
+-------------------------------------------------------------------
+-- Corollary 7.10
+-------------------------------------------------------------------
+
+-- Complete intersection ideal for TN93 in ptilde coordinates
+CI=value get "Quartet1234CI_ptilde.txt";
+betti CI --28 quadrics, 4 cubics, 14 quartics
+
+CI81=trim(CI+F);
+betti CI81 --60,8,3,3
+
+CI81aux=trim(CI+F+G);
+betti CI81aux --4,3,3
+
+--We want just 10 quadrics
+
+CI81sat=trim sum apply(flatten entries gens CI81,i->saturate(ideal{i},ideal{p_(1,1,1,1)*p_(1,4,1,4)}));
+betti CI81sat --69 linear, 5 quadrics
+netList ci81sat_*
+
+
+--Cannot do minimal primes in a field of fractions
+PD=time minimalPrimes CI81aux;
+
+
+ci=value get "Quartet1234ci_ptilde.txt";
+betti ci --37 quadrics, 7 cubics, 2 quartics
+
+ci81=trim(ci+F);
+betti ci81 --60 linear, 8 quadrics, 4 cubics, 2 quartics
+
+ci81aux=trim(ci+F+G);
+betti ci81aux --66 linear, 4 quadrics, 4 cubics, 2 quartics
+netList ci81aux_*
+
+ci81sat=trim sum apply(flatten entries gens ci81,i->saturate(ideal{i},ideal{p_(1,1,1,1)*p_(1,4,1,4)}));
+betti ci81sat --69 linear, 5 quadrics
+netList ci81sat_*
+
+isSubset(CI81,CI81sat)--true
+saturate(CI81,ideal{p_(1,1,1,1)*p_(1,4,1,4)})==CI81sat--false
+saturate(CI81,ideal{p_(1,1,1,1)*p_(1,4,1,4)})==saturate(CI81sat,ideal{p_(1,1,1,1)*p_(1,4,1,4)})--true
+
+
+Jac=jacobian CI81;
+rank Jac --74
+
+apply(gens R,i->i=>1)
+noEvol=matrix{toList apply(gens Rp,i->sub(f12(i),apply(gens R,i->i=>1)))}
+JacNoEvol=sub(Jac,noEvol)
+rank JacNoEvol --74
+
+sub(f12(p_(2,2,3,3)),apply(gens R,i->i=>1))
+sub(f12(p_(3,3,3,3)),apply(gens R,i->i=>1))
+sub(f12(p_(2,2,3,3)),apply(gens R,i->i=>1))
+
+aux=trim sum apply(flatten entries gens CI,i->saturate(ideal{i},ideal{p_(1,1,1,1)*p_(1,2,1,2)*p_(1,3,1,3)*p_(1,4,1,4)}));
+aux==ci --true
+
+
+------------------------------
+------------------------------
+
+netList F
+flat=value get "Flat1234_ptilde.txt"; 
+flat_{1,2,3,4}^{1,2,3,4}
+
+flatF81=sub(flat,apply(flatten entries gens F,i->(terms i)_0=>-(terms i)_1));
+
+s={(1,1),(1,4),(4,1),(2,4),(4,2),(4,4),(2,2),(1,2),(2,1),(3,3),(1,3),(3,1),(2,3),(3,2),(3,4),(4,3)}
+
+--Blocks of rk 1
+B11=flatF81_{position(s,i->i==(1,4)),position(s,i->i==(4,1)),position(s,i->i==(2,4)),position(s,i->i==(4,2))}
+B12=flatF81_{position(s,i->i==(1,3)),position(s,i->i==(3,1)),position(s,i->i==(3,2)),position(s,i->i==(2,3))}
+B13=flatF81_{position(s,i->i==(1,2)),position(s,i->i==(2,1))}
+
+--Block of rk 2
+B2=flatF81_{position(s,i->i==(1,1)),position(s,i->i==(1,2)),position(s,i->i==(2,2))}
+
+--Blocks of rk 3
+B31=flatF81_{position(s,i->i==(1,1)),position(s,i->i==(1,2)),position(s,i->i==(1,4)),position(s,i->i==(4,4))}
+B32=flatF81_{position(s,i->i==(1,1)),position(s,i->i==(1,2)),position(s,i->i==(1,3)),position(s,i->i==(3,3))}
+
+--rk 1 conditions
+CI1F81=trim ((ideal flatten for i to (numcols B11)-1 list (for j to (numrows B11)-1 list det B11_{0,i}^{1,j}))+
+(ideal flatten for i to (numcols B12)-1 list (for j to (numrows B12)-1 list det B12_{0,i}^{10,j}))+
+(ideal flatten for i to (numcols B13)-1 list (for j to (numrows B13)-1 list det B13_{0,i}^{7,j})));
+betti CI1F81 --8 quadrics
+netList CI1F81_*
+
+c1=trim (ideal flatten for i to (numcols B11)-1 list (for j to (numrows B11)-1 list det B11_{0,i}^{1,j}));
+betti c1 --6
+c2=trim (ideal flatten for i to (numcols B12)-1 list (for j to (numrows B12)-1 list det B12_{0,i}^{10,j}));
+betti c2  --6
+netList c1_*
+netList c2_*
+c1==c2 --false because we are not imposing topology equations p3232=p4242 and p3223=p4224
+c3=trim (ideal flatten for i to (numcols B13)-1 list (for j to (numrows B13)-1 list det B13_{0,i}^{7,j}));
+betti c3 --2
+netList c3_*
+isSubset(c3,c1) --true
+
+--rk 2 conditions
+CI2F81=trim (ideal flatten for j to (numrows B2)-1 list det B2_{0,1,2}^{0,7,j});
+betti CI2F81 --4 cubics
+
+--rk 3 conditions
+CI3F81=trim (ideal flatten for j to (numrows B31)-1 list det B31^{0,7,1,j}+ideal flatten for j to (numrows B32)-1 list det B32^{0,7,10,j});
+betti CI3F81 --7 quartics
+c4=trim (ideal flatten for j to (numrows B31)-1 list det B31^{0,7,1,j});
+c5=trim (ideal flatten for j to (numrows B32)-1 list det B32^{0,7,10,j});
+betti c4 --5
+betti c5 --5
+netList c4_*
+netList c5_*
+
+--All ranks
+CIF81=trim(CI1F81+CI2F81+CI3F81);
+betti CIF81 --8 quadrics, 3 cubics, 3 quartics
+netList CIF81_*
+
+satCIF81=time saturate(CIF81,ideal{p_(1,1,1,1)*p_(1,4,1,4)});
+betti satCIF81  --9 linear, 10 quadrics
+
+satCI1F81=time saturate(CI1F81,ideal{p_(1,1,1,1)*p_(1,4,1,4)});
+betti satCI1F81  --from 8 quadrics to 4 linear equations (binomial topology equations) and 9 quadrics
+netList satCI1F81_*
+
+satCI2F81=time saturate(CI2F81,ideal{p_(1,1,1,1)*p_(1,4,1,4)});
+betti satCI2F81  --from 4 cubics to 1 linear equation (nonbinomial topology equation) and 4 quadrics
+netList satCI2F81_*
+
+satCI3F81=time saturate(CI3F81,ideal{p_(1,1,1,1)*p_(1,4,1,4)});
+betti satCI3F81  --from 7 quartics to 4 linear equations (nonbinomial topology equations) and 4 quadrics
+netList satCI3F81_*
+
+trim(satCI1F81+satCI2F81+satCI3F81)==satCIF81 --true: saturation can be done piecewise 
+
+netList apply(flatten entries gens CI1F81,i->saturate(ideal{i},ideal{p_(1,1,1,1)*p_(1,4,1,4)}))
+ci1=trim sum apply(flatten entries gens CI1F81,i->saturate(ideal{i},ideal{p_(1,1,1,1)*p_(1,4,1,4)}))
+betti ci1 -- 4 linear, 4 quadrics
+
+netList apply(flatten entries gens CI2F81,i->saturate(ideal{i},ideal{p_(1,1,1,1)*p_(1,4,1,4)}))
+ci2=trim sum apply(flatten entries gens CI2F81,i->saturate(ideal{i},ideal{p_(1,1,1,1)*p_(1,4,1,4)}))
+betti ci2 -- 3 quadric, 1 cubic
+
+netList apply(flatten entries gens CI3F81,i->saturate(ideal{i},ideal{p_(1,1,1,1)*p_(1,4,1,4)}))
+ci3=trim sum apply(flatten entries gens CI3F81,i->saturate(ideal{i},ideal{p_(1,1,1,1)*p_(1,4,1,4)}))
+betti ci3 -- 4 linear, 3 quadrics
+-- two of this quadrics already appear in ci1, the other one is the missing one
+
+ci=trim(ci1+ci2+ci3);
+betti ci -- 8 linear, 6 quadrics
+netList ci_*
+
+
+netList (trim(ci1+ci2))_*
+
+netList (trim(ci3+ci2+ideal(p_(4,2,4,2)-p_(4,4,4,2),p_(4,2,2,4)-p_(4,4,4,2),p_(3,2,3,2)-p_(4,4,4,2),p_(3,2,2,3)-p_(4,
+       4,4,2))))_*
+
+netList (trim(ci3+ci2))_*
+
+citripod=ideal{p_(1,1,4,4)*p_(1,4,1,4)*p_(1,4,4,1)-p_(1,1,1,1)*p_(1,4,4,4)^2,
+               p_(1,4,4,1)*p_(4,1,4,1)*p_(4,4,1,1)-p_(1,1,1,1)*p_(4,4,4,1)^2}
+	   
+	  
+citotal=trim(ci+citripod);
+betti citotal
+
+codim ci
+numgens ci
+
+codim citotal
+numgens citotal
