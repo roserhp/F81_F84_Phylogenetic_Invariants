@@ -15,9 +15,10 @@
 -- 5. Proposition 6.4: space of mixtures of a specific tree topology
 -- 6. Proposition 6.5: the listed equations are model equations
 -- 7. Theorem 6.7: space of mixtures
--- 8. Theorem 7.6: phylogenetic variety and complete intersection
+-- 8. Theorem 7.6: complete intersection
 -- 9. Corollary 7.8: rank constraints in flattening matrices
 -- 10. Corollary 7.10: variety of TN93 intersected with symmetry equations
+--
 -------------------------------------------------------------------
 
 -------------------------------------------------------------------
@@ -182,7 +183,7 @@ apply(flatten entries gens F,i->f14(i))
 
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
--- Proposition 5.4: additional binomial equations for a specific tree topology
+-- 3. Proposition 5.4: additional binomial equations for a specific tree topology
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
@@ -201,7 +202,7 @@ numgens trim(F+G) --66
 
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
--- Proposition 5.5: non-binomial equations for a specific tree topology
+-- 4. Proposition 5.5: non-binomial equations for a specific tree topology
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
@@ -232,7 +233,7 @@ sub(f12(f),p_4=>1-p_1-p_2-p_3) --0
 
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
--- Proposition 6.4: space of mixtures for a specific tree topology
+-- 5. Proposition 6.4: space of mixtures for a specific tree topology
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
@@ -247,7 +248,7 @@ I12linear==E12 --true
 
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
--- Proposition 6.5: non-binomial linear model equations
+-- 6. Proposition 6.5: non-binomial linear model equations
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
@@ -289,7 +290,7 @@ sub(f12(i2),p_4=>1-p_1-p_2-p_3) --0
 
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
--- Theorem 6.7: space of mixtures
+-- 7. Theorem 6.7: space of mixtures
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
@@ -313,7 +314,7 @@ sub(Ilinear,p_4=>1-p_1-p_2-p_3)==sub(E,p_4=>1-p_1-p_2-p_3) --true
 
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
--- Theorem 7.6: complete intersection
+-- 8. Theorem 7.6: complete intersection
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
@@ -388,229 +389,51 @@ I12==saturate(X+E12,ideal{p_(1,1,1,1)*p_(1,4,1,4)*p_(4,1,4,1)}) --true
 
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
--- Corollary 7.8
+-- 9. Corollary 7.8: rank constraints in flattening matrices
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
 JA=ideal{xc,xd,xe,xf,xg}+E12;
 IA=CIF81+F;
+
+--Saturations are equal
 saturate(JA,ideal{p_(1,1,1,1)*p_(1,4,1,4)})==saturate(IA,ideal{p_(1,1,1,1)*p_(1,4,1,4)}) --true
 
+--Saturation contained in the vanishing ideal
 JAsaturated=saturate(JA,ideal{p_(1,1,1,1)*p_(1,4,1,4)});
 isSubset(JAsaturated,I12) --true
 
+--Saturation equals vanishing ideal up to degree two
+I12quadratic=ideal select(flatten entries gens I12,i->degree i=={1} or degree i=={2});
+JAsaturated==I12quadratic --true
 
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
--- Corollary 7.10
+-- 10. Corollary 7.10: variety of TN93 intersected with symmetry equations
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
 
-
-
-
-
-
-
---------------------------------------------------------------------------
----------------------------------------------------------------------------
---------------------------------------------------------------------------
---A partir d'aquí, s'ha de mirar bé. Sembla que no és correcte que la CI és la interseccio de CI i F
-
--------------------------------------------------------------------
--- Corollary 7.8
--------------------------------------------------------------------
+-- WARNING: there is a mistake in this proof that will be solved during the review process
+-- The local complete intersection provided in Theorem 7.6 is not the intersection between
+-- the local complete intersection for TN93 provided in "A novel algebraic approach for time-reversible evolutionary models"
+-- and symmetry equations for F81
+-- However, there exists A DIFFERENT local complete intersection that satisfies the statement
 
 -- Complete intersection ideal for TN93 in ptilde coordinates
-CI=value get "Quartet1234CI_ptilde.txt";
-betti CI --28 quadrics, 4 cubics, 14 quartics
+CI=value get "Auxiliary_files/QuartetCI_ptilde.txt";
+betti CI --4 linear, 40 quadrics, 10 cubics, 14 quartics
 
-CI81=trim(CI+F);
-betti CI81 --8,3,3
+-- Complete intersection ideal for TN93 intersected with symmetry equations for F81
+CIF=trim(CI+F);
+betti CIF -- 62 linear, 8 quadrics, 5 cubics, 3 quartics
 
-netList CI81_*
+-- Check that this ideal is equal to the local complete intersection from Theorem 7.6 up to saturation
+CIFsat=trim sum apply(flatten entries gens CIF,i->saturate(ideal{i},ideal{p_(1,1,1,1)*p_(1,4,1,4)}));
+betti CIFsat --71 linear, 5 quadrics, 2 cubics
+CIFsat==X+E12 --true
 
-J=ideal{p_(1,4,1,4)*p_(4,1,4,1)-p_(4,1,1,4)*p_(1,4,4,1),
-    p_(1,4,1,4)*p_(4,1,4,4)-p_(4,1,1,4)*p_(1,4,4,4),
-    p_(1,4,1,4)*p_(4,4,4,1)-p_(4,4,1,4)*p_(1,4,4,1),
-    p_(1,4,1,4)*p_(2,4,4,4)-p_(4,4,1,4)*p_(1,4,4,4),f}
-
-
-isSubset(sub(J,p_4=>1-p_1-p_2-p_3),sub(CI81,p_4=>1-p_1-p_2-p_3)) --false
-
-f % gb CI81 --no 0
--------------------------------------------------------------------
--- Corollary 7.10
--------------------------------------------------------------------
-
--- Complete intersection ideal for TN93 in ptilde coordinates
-CI=value get "Quartet1234CI_ptilde.txt";
-betti CI --28 quadrics, 4 cubics, 14 quartics
-
-CI81=trim(CI+F);
-betti CI81 --60,8,3,3
-
-CI81aux=trim(CI+F+G);
-betti CI81aux --4,3,3
-
---We want just 10 quadrics
-
-CI81sat=trim sum apply(flatten entries gens CI81,i->saturate(ideal{i},ideal{p_(1,1,1,1)*p_(1,4,1,4)}));
-betti CI81sat --69 linear, 5 quadrics
-netList ci81sat_*
-
-
---Cannot do minimal primes in a field of fractions
-PD=time minimalPrimes CI81aux;
-
-
-ci=value get "Quartet1234ci_ptilde.txt";
-betti ci --37 quadrics, 7 cubics, 2 quartics
-
-ci81=trim(ci+F);
-betti ci81 --60 linear, 8 quadrics, 4 cubics, 2 quartics
-
-ci81aux=trim(ci+F+G);
-betti ci81aux --66 linear, 4 quadrics, 4 cubics, 2 quartics
-netList ci81aux_*
-
-ci81sat=trim sum apply(flatten entries gens ci81,i->saturate(ideal{i},ideal{p_(1,1,1,1)*p_(1,4,1,4)}));
-betti ci81sat --69 linear, 5 quadrics
-netList ci81sat_*
-
-isSubset(CI81,CI81sat)--true
-saturate(CI81,ideal{p_(1,1,1,1)*p_(1,4,1,4)})==CI81sat--false
-saturate(CI81,ideal{p_(1,1,1,1)*p_(1,4,1,4)})==saturate(CI81sat,ideal{p_(1,1,1,1)*p_(1,4,1,4)})--true
-
-
-Jac=jacobian CI81;
-rank Jac --74
-
-apply(gens R,i->i=>1)
-noEvol=matrix{toList apply(gens Rp,i->sub(f12(i),apply(gens R,i->i=>1)))}
-JacNoEvol=sub(Jac,noEvol)
-rank JacNoEvol --74
-
-sub(f12(p_(2,2,3,3)),apply(gens R,i->i=>1))
-sub(f12(p_(3,3,3,3)),apply(gens R,i->i=>1))
-sub(f12(p_(2,2,3,3)),apply(gens R,i->i=>1))
-
-aux=trim sum apply(flatten entries gens CI,i->saturate(ideal{i},ideal{p_(1,1,1,1)*p_(1,2,1,2)*p_(1,3,1,3)*p_(1,4,1,4)}));
-aux==ci --true
-
-
-------------------------------
-------------------------------
-
-netList F
-flat=value get "Flat1234_ptilde.txt"; 
-flat_{1,2,3,4}^{1,2,3,4}
-
-flatF81=sub(flat,apply(flatten entries gens F,i->(terms i)_0=>-(terms i)_1));
-
-s={(1,1),(1,4),(4,1),(2,4),(4,2),(4,4),(2,2),(1,2),(2,1),(3,3),(1,3),(3,1),(2,3),(3,2),(3,4),(4,3)}
-
---Blocks of rk 1
-B11=flatF81_{position(s,i->i==(1,4)),position(s,i->i==(4,1)),position(s,i->i==(2,4)),position(s,i->i==(4,2))}
-B12=flatF81_{position(s,i->i==(1,3)),position(s,i->i==(3,1)),position(s,i->i==(3,2)),position(s,i->i==(2,3))}
-B13=flatF81_{position(s,i->i==(1,2)),position(s,i->i==(2,1))}
-
---Block of rk 2
-B2=flatF81_{position(s,i->i==(1,1)),position(s,i->i==(1,2)),position(s,i->i==(2,2))}
-
---Blocks of rk 3
-B31=flatF81_{position(s,i->i==(1,1)),position(s,i->i==(1,2)),position(s,i->i==(1,4)),position(s,i->i==(4,4))}
-B32=flatF81_{position(s,i->i==(1,1)),position(s,i->i==(1,2)),position(s,i->i==(1,3)),position(s,i->i==(3,3))}
-
---rk 1 conditions
-CI1F81=trim ((ideal flatten for i to (numcols B11)-1 list (for j to (numrows B11)-1 list det B11_{0,i}^{1,j}))+
-(ideal flatten for i to (numcols B12)-1 list (for j to (numrows B12)-1 list det B12_{0,i}^{10,j}))+
-(ideal flatten for i to (numcols B13)-1 list (for j to (numrows B13)-1 list det B13_{0,i}^{7,j})));
-betti CI1F81 --8 quadrics
-netList CI1F81_*
-
-c1=trim (ideal flatten for i to (numcols B11)-1 list (for j to (numrows B11)-1 list det B11_{0,i}^{1,j}));
-betti c1 --6
-c2=trim (ideal flatten for i to (numcols B12)-1 list (for j to (numrows B12)-1 list det B12_{0,i}^{10,j}));
-betti c2  --6
-netList c1_*
-netList c2_*
-c1==c2 --false because we are not imposing topology equations p3232=p4242 and p3223=p4224
-c3=trim (ideal flatten for i to (numcols B13)-1 list (for j to (numrows B13)-1 list det B13_{0,i}^{7,j}));
-betti c3 --2
-netList c3_*
-isSubset(c3,c1) --true
-
---rk 2 conditions
-CI2F81=trim (ideal flatten for j to (numrows B2)-1 list det B2_{0,1,2}^{0,7,j});
-betti CI2F81 --4 cubics
-
---rk 3 conditions
-CI3F81=trim (ideal flatten for j to (numrows B31)-1 list det B31^{0,7,1,j}+ideal flatten for j to (numrows B32)-1 list det B32^{0,7,10,j});
-betti CI3F81 --7 quartics
-c4=trim (ideal flatten for j to (numrows B31)-1 list det B31^{0,7,1,j});
-c5=trim (ideal flatten for j to (numrows B32)-1 list det B32^{0,7,10,j});
-betti c4 --5
-betti c5 --5
-netList c4_*
-netList c5_*
-
---All ranks
-CIF81=trim(CI1F81+CI2F81+CI3F81);
-betti CIF81 --8 quadrics, 3 cubics, 3 quartics
-netList CIF81_*
-
-satCIF81=time saturate(CIF81,ideal{p_(1,1,1,1)*p_(1,4,1,4)});
-betti satCIF81  --9 linear, 10 quadrics
-
-satCI1F81=time saturate(CI1F81,ideal{p_(1,1,1,1)*p_(1,4,1,4)});
-betti satCI1F81  --from 8 quadrics to 4 linear equations (binomial topology equations) and 9 quadrics
-netList satCI1F81_*
-
-satCI2F81=time saturate(CI2F81,ideal{p_(1,1,1,1)*p_(1,4,1,4)});
-betti satCI2F81  --from 4 cubics to 1 linear equation (nonbinomial topology equation) and 4 quadrics
-netList satCI2F81_*
-
-satCI3F81=time saturate(CI3F81,ideal{p_(1,1,1,1)*p_(1,4,1,4)});
-betti satCI3F81  --from 7 quartics to 4 linear equations (nonbinomial topology equations) and 4 quadrics
-netList satCI3F81_*
-
-trim(satCI1F81+satCI2F81+satCI3F81)==satCIF81 --true: saturation can be done piecewise 
-
-netList apply(flatten entries gens CI1F81,i->saturate(ideal{i},ideal{p_(1,1,1,1)*p_(1,4,1,4)}))
-ci1=trim sum apply(flatten entries gens CI1F81,i->saturate(ideal{i},ideal{p_(1,1,1,1)*p_(1,4,1,4)}))
-betti ci1 -- 4 linear, 4 quadrics
-
-netList apply(flatten entries gens CI2F81,i->saturate(ideal{i},ideal{p_(1,1,1,1)*p_(1,4,1,4)}))
-ci2=trim sum apply(flatten entries gens CI2F81,i->saturate(ideal{i},ideal{p_(1,1,1,1)*p_(1,4,1,4)}))
-betti ci2 -- 3 quadric, 1 cubic
-
-netList apply(flatten entries gens CI3F81,i->saturate(ideal{i},ideal{p_(1,1,1,1)*p_(1,4,1,4)}))
-ci3=trim sum apply(flatten entries gens CI3F81,i->saturate(ideal{i},ideal{p_(1,1,1,1)*p_(1,4,1,4)}))
-betti ci3 -- 4 linear, 3 quadrics
--- two of this quadrics already appear in ci1, the other one is the missing one
-
-ci=trim(ci1+ci2+ci3);
-betti ci -- 8 linear, 6 quadrics
-netList ci_*
-
-
-netList (trim(ci1+ci2))_*
-
-netList (trim(ci3+ci2+ideal(p_(4,2,4,2)-p_(4,4,4,2),p_(4,2,2,4)-p_(4,4,4,2),p_(3,2,3,2)-p_(4,4,4,2),p_(3,2,2,3)-p_(4,
-       4,4,2))))_*
-
-netList (trim(ci3+ci2))_*
-
-citripod=ideal{p_(1,1,4,4)*p_(1,4,1,4)*p_(1,4,4,1)-p_(1,1,1,1)*p_(1,4,4,4)^2,
-               p_(1,4,4,1)*p_(4,1,4,1)*p_(4,4,1,1)-p_(1,1,1,1)*p_(4,4,4,1)^2}
-	   
-	  
-citotal=trim(ci+citripod);
-betti citotal
-
-codim ci
-numgens ci
-
-codim citotal
-numgens citotal
+-- Prove that CIF is also a local complete intersection
+JacCIF=jacobian CIF;
+rank JacCIF --78
+JacCIFNoEvol=sub(JacCIF,noEvol);
+rank JacCIFNoEvol --78
