@@ -11,7 +11,7 @@
 -- 2. Proposition 4.6 (sanity check): the listed equations are indeed linear model equations
 -- 3. Proposition 5.2: the listed equations are linear topology equations 
 -- 4. Theorem 7.3: complete intersection
--- 5. Corollary 7.5: rank constraints in flattening matrices
+-- 5. Corollary 7.5: rank constraints in flattening matrices. See computations in Sage.
 -- 6. Corollary 7.10 (partial proof): complete intersection of TN93 intersected with symmetry equations 
 --
 -------------------------------------------------------------------
@@ -261,6 +261,8 @@ betti IA --31 linear, 15 quadrics, 4 cubics, 9 quartics
 JAsat=time saturate(JA,ideal{p_(1,1,1,1)*p_(1,2,1,2)*p_(1,4,1,4)});
 IAsat=time saturate(IA,ideal{p_(1,1,1,1)*p_(1,2,1,2)*p_(1,4,1,4)});
 JAsat==IAsat
+
+-- Check Sage computations for Corollary 7.5 (Sage folder in this repository). 
 
 ------------------------------------------------------------------------------
 ------------------------------------------------------------------------------
