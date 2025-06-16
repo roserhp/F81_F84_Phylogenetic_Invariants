@@ -13,10 +13,10 @@ For the sake of readability, some required computations can be found in file Tri
 
 * Quartet.m2: this file contains the following computations regarding quartets:
   * No-evolution point $\rho=\psi(Id,Id,Id,Id,Id)$ and point $q=\psi(Id,Id,Id,Id,M)$ for TN93 in probability coordinates $p_{i_1i_2i_3i_4}$
--- 2. Point $q=\varphi(Id,Id,Id,Id,D)$ in coordinates $\tilde{p}_{i_1i_2i_3i_4}$ for TN93
--- 3. General point $p=\varphi(D_1,D_2,D_3,D_4,D)$ in coordinates $\tilde{p}_{i_1i_2i_3i_4}$ for TN93
--- 4. Flattening matrix 12|34 for a general point $p=\varphi(D_1,D_2,D_3,D_4,D)$ in coordinates $\tilde{p}_{i_1i_2i_3i_4}$ for TN93
--- 5. Complete intersection in coordinates $\tilde{p}_{i_1i_2i_3i_4}$ for TN93
+  * Point $q=\varphi(Id,Id,Id,Id,D)$ in coordinates $\tilde{p}_{i_1i_2i_3i_4}$ for TN93
+  * General point $p=\varphi(D_1,D_2,D_3,D_4,D)$ in coordinates $\tilde{p}_{i_1i_2i_3i_4}$ for TN93
+  * Flattening matrix 12|34 for a general point $p=\varphi(D_1,D_2,D_3,D_4,D)$ in coordinates $\tilde{p}_{i_1i_2i_3i_4}$ for TN93
+  * Complete intersection in coordinates $\tilde{p}_{i_1i_2i_3i_4}$ for TN93
 
 
 The following .txt files have been generated with Tripod.m2:
