@@ -1,15 +1,14 @@
 -----------------------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------------------
 --
--- F81Quartet_propositions.m2: this file contains computations behind the following results on quartets:
+-- F81Quartet_propositions.m2: this file contains computations regarding quartets evolving under F81:
 --
 -- 0. Setup
 -- 1. Parametrization and vanishing ideal for F81 with each tree topology
 --
--- Sanity check:
--- 2. Proposition 4.7: the listed equations are indeed linear model equations
+-- Computational proofs (unless stated otherwise) of the following results:
 --
--- Computational proof:
+-- 2. Proposition 4.7 (sanity check): the listed equations are indeed linear model equations
 -- 3. Proposition 5.4: the listed linear binomial equations hold for a specific tree topology
 -- 4. Proposition 5.5: the listed linear non-binomial equations hold for a specific tree topology
 -- 5. Proposition 6.4: space of mixtures of a specific tree topology
@@ -17,7 +16,7 @@
 -- 7. Theorem 6.7: space of mixtures
 -- 8. Theorem 7.6: complete intersection
 -- 9. Corollary 7.8: rank constraints in flattening matrices
--- 10. Corollary 7.10: variety of TN93 intersected with symmetry equations
+-- 10. Corollary 7.10 (partial proof): complete intersection of TN93 intersected with symmetry equations 
 --
 -------------------------------------------------------------------
 
