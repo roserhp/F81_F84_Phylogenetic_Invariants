@@ -1,6 +1,15 @@
-* Tripod_propositions.m2: this file contains all computational proofs regarding tripods:
+* Tripod_propositions.m2: this file contains all computations regarding tripods:
   * Section 3: Propositions 3.2, 3.3, 3.4
   * Section 7: Propositions 7.1, 7.2
+* F81Quartet_propositions.m2: this file contains all computations regarding quartets under the F81 model:
+  * Section 4: Proposition 4.7
+  * Section 5: Propositions 5.4, 5.5
+  * Section 6: Propositions 6.4, 6.5, Theorem 6.7
+  * Section 7: Theorem 7.6, Corollaries 7.8, 7.10
+* F84Quartet_propositions.m2: this file contains all computations regarding quartets under the F84 model:
+  * Section 4: Proposition 4.6
+  * Section 5: Proposition 5.2
+  * Section 7: Theorem 7.3, Corollaries 7.5, 7.10
 
 For the sake of readability, some required computations needed for the previous files can be found in file Tripod.m2 and Quartet.m2. All imported txt files have been generated with Tripod.m2 and Quartet.m2 are available in this repository.
 
