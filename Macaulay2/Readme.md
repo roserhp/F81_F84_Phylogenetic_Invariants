@@ -19,17 +19,17 @@ For the sake of readability, some required computations needed for the previous 
   * Complete intersection in coordinates $\tilde{p}_{i_1i_2i_3i_4}$ for TN93
 
 AUXILIARY FILES
-Files generated with Tripod.m2:
- * Tripod_NonZeroEntries.txt
- * Tripod_NonZeroPtilde.txt
- * TripodCI_ptilde.txt
- * TripodVanishingIdeal_ptilde.txt
-Files generated with Quartet.m2:
- * qtilde1234.txt
- * Flat1234_ptilde.txt
- * QuartetCI_ptilde.txt
- * QuartetIntersectionVanishingIdeals_ptilde.txt
-Macaulay2 package Permutations (only needed for older M2 versions):
- * Permutations.m2
- * Folder Permutations, with auxiliary files 
+* Files generated with Tripod.m2:
+  * Tripod_NonZeroEntries.txt
+  * Tripod_NonZeroPtilde.txt
+  * TripodCI_ptilde.txt
+  * TripodVanishingIdeal_ptilde.txt
+* Files generated with Quartet.m2:
+  * qtilde1234.txt
+  * Flat1234_ptilde.txt
+  * QuartetCI_ptilde.txt
+  * QuartetIntersectionVanishingIdeals_ptilde.txt
+* Macaulay2 package Permutations (only needed for older M2 versions):
+  * Permutations.m2
+  * Folder Permutations, with auxiliary files 
 
