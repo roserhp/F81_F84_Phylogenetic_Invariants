@@ -7,7 +7,7 @@ The repository contains two folders with code in the following two software syst
 
 * Macaulay2:
   * Tripod_propositions.m2: This file contains computations for Propositions 3.2, 3.3, 3.4, 7.1 and 7.2.
-  * F81Quartet_propositions.m2: This file contains computations for Propositions 4.7, 5.4, 5.5, 6.4 and 6.5, Theorems 6.7 and 7.6, and Corollary 7.8 and 7.10.
+  * F81Quartet_propositions.m2: This file contains computations for Propositions 4.7, 5.4, 5.5, 6.4 and 6.5, Theorems 6.7 and 7.6, and Corollaries 7.8 and 7.10.
   * F84Quartet_propositions.m2: This file contains computations for Propositions 4.6 and 5.2, Theorem 7.3 and Corollary 7.10.
   * Tripod.m2: This file contains code and computations required for Tripod_propositions.m2.
   * Quartet.m2: This file contains code and computations required for F81Quartet_propositions.m2 and F84Quartet_propositions.m2.
