@@ -11,7 +11,7 @@
 -- 2. Proposition 4.6 (sanity check): the listed equations are indeed linear model equations
 -- 3. Proposition 5.2: the listed equations are linear topology equations 
 -- 4. Theorem 7.3: complete intersection
--- 5. Corollary 7.5: rank constraints in flattening matrices. See computations in Sage.
+-- 5. Corollary 7.5 (code written for necessary computations for a computational proof, with terminating issues): rank constraints in flattening matrices. See computations in Sage.
 -- 6. Corollary 7.10 (partial proof): complete intersection of TN93 intersected with symmetry equations 
 --
 -------------------------------------------------------------------
